@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+  <id><![CDATA[[OCMOD] Add "Company Name" to order email]]></id>
+  <name><![CDATA[Add "Company Name" to order email]]></name>
+  <code>knns-add-company-name-order-email</code>
+  <version>0.1.0</version>
+  <author><![CDATA[<font color="#7F458C"><b>kanenas.net (aka Nikolas Branis)</b></font> - nbran@kanenas.net]]></author>
+  <link>https://www.kanenas.net/</link>
+  <file path="catalog/controller/mail/order.php" error="log">
+    <operation error="skip">
+      <search><![CDATA[$data['shipping_address'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));]]></search>
+      <add position="after"><![CDATA[
+   //$this->log->write($order_info);
+   //$this->log->write("VAT ID: " . $order_info['custom_field'][1]);
+   //$this->log->write("Company: " . $order_info['custom_field'][2]);
+   //$this->log->write("Tax Office: " . $order_info['custom_field'][3]);
+   //$this->log->write("Business Activity: " . $order_info['custom_field'][4]);
+   $data['company_name'] = $order_info['custom_field'][2];
+      ]]></add>
+    </operation>
+  </file>
+  <file path="catalog/language/el-gr/el-gr.php" error="log">
+    <operation error="skip">
+      <search><![CDATA[// Text]]></search>
+      <add position="after"><![CDATA[$_['text_company_name'] = 'Επωνυμία:';]]></add>
+    </operation>
+  </file>
+  <file path="catalog/language/en-gb/en-gb.php" error="log">
+    <operation error="skip">
+      <search><![CDATA[// Text]]></search>
+      <add position="after"><![CDATA[$_['text_company_name'] = 'Company Name:';]]></add>
+    </operation>
+  </file>
+  <file path="catalog/view/theme/default/template/mail/order_add.twig" error="log">
+    <operation error="skip">
+      <search><![CDATA[<b>{{ text_date_added }}</b> {{ date_added }}<br/>]]></search>
+      <add position="after"><![CDATA[
+          {% if company_name %}
+            <b>{{ text_company_name }}</b> {{ company_name }}<br/>
+          {% endif %}
+      ]]></add>
+    </operation>
+  </file>
+</modification>
